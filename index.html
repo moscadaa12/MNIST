@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía PRO: CRISP-DM (MNIST)</title>
+    <style>
+        /* --- Fuentes y Estilos Generales --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        
+        :root {
+            --color-primario: #0052D4;
+            --color-secundario: #4364F7;
+            --color-gradiente: linear-gradient(135deg, #0052D4 0%, #4364F7 60%, #6FB1FC 100%);
+            --color-fondo: #f4f8fb;
+            --color-texto: #333;
+            --color-tarjeta: #ffffff;
+            --sombra-tarjeta: 0 10px 30px rgba(0, 82, 212, 0.08);
+            --sombra-tarjeta-hover: 0 15px 35px rgba(0, 82, 212, 0.12);
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.7;
+        }
+
+        /* --- Iconos SVG (Para un look PRO) --- */
+        svg.icon {
+            width: 1.2em;
+            height: 1.2em;
+            margin-right: 12px;
+            vertical-align: -0.2em;
+        }
+        .icon-lightbulb { fill: #f5a623; }
+        .icon-header { fill: var(--color-primario); }
+
+        /* --- Encabezado Llamativo --- */
+        header {
+            background: var(--color-gradiente);
+            color: white;
+            padding: 50px 20px 40px 20px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0, 82, 212, 0.3);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        header p {
+            font-size: 1.4em;
+            opacity: 0.95;
+            font-weight: 400;
+            margin: 10px 0 0 0;
+        }
+
+        /* --- Barra de Navegación Interactiva --- */
+        nav {
+            background-color: var(--color-tarjeta);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-bottom: 1px solid #e0e0e0;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; 
+        }
+        nav li a {
+            display: block;
+            color: #333;
+            text-align: center;
+            padding: 16px 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            transition: color 0.3s;
+        }
+        nav li a::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 4px;
+            background: var(--color-primario);
+            transition: width .3s;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        nav li a:hover {
+            color: var(--color-primario);
+        }
+        nav li a:hover::after {
+            width: 80%;
+        }
+
+        /* --- Contenido Principal y Tarjetas --- */
+        main {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 15px;
+        }
+
+        /* --- Animación de Tarjetas --- */
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--color-tarjeta);
+            border-radius: 20px;
+            box-shadow: var(--sombra-tarjeta);
+            margin-bottom: 35px;
+            overflow: hidden; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0; /* Empieza oculto para animación */
+            animation: fadeInSlideUp 0.6s ease-out forwards;
+        }
+        /* Stagger (escalonar) la animación */
+        .card:nth-child(1) { animation-delay: 0.0s; }
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+        .card:nth-child(5) { animation-delay: 0.4s; }
+        .card:nth-child(6) { animation-delay: 0.5s; }
+        .card:nth-child(7) { animation-delay: 0.6s; }
+
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--sombra-tarjeta-hover);
+        }
+        .card-header {
+            padding: 25px 35px;
+            border-bottom: 1px solid #f0f0f0;
+            background: linear-gradient(100deg, #fdfdff 0%, #f4f8fb 100%);
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 2.3em;
+            font-weight: 700;
+            color: #003366; /* Un azul más oscuro para el título */
+        }
+        .card-content {
+            padding: 20px 35px 30px 35px;
+        }
+        .card-content p, .card-content li {
+            font-size: 1.1em;
+            color: #444;
+        }
+        .card-content ul {
+            padding-left: 20px;
+            list-style-type: none; /* Quitamos bullets estándar */
+        }
+        .card-content li {
+            position: relative;
+            padding-left: 30px; /* Espacio para el check */
+            margin-bottom: 12px;
+        }
+        .card-content li::before {
+            content: '✔'; /* Icono de check */
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--color-secundario);
+            font-weight: bold;
+        }
+        .card-content h3 {
+            font-size: 1.6em;
+            color: #004a99;
+            border-bottom: 2px solid #e0e8f0;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+        
+        /* --- Cajas Didácticas (¡NUEVO!) --- */
+        .didactic-box {
+            background: #fefce8; /* Amarillo pálido */
+            border: 1px solid #fde68a;
+            border-left: 5px solid #f59e0b; /* Naranja/Amarillo */
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 25px 0;
+        }
+        .didactic-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.3em;
+            color: #ca8a04;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+        .didactic-box p {
+            margin: 0;
+            font-size: 1.05em !important; 
+            color: #555 !important;
+        }
+
+        /* --- Estilos para el Código --- */
+        pre {
+            background-color: #2d2d2d;
+            color: #f1f1f1;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto; 
+            font-size: 1em;
+            border: 1px solid #444;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        code .comment { color: #8c8c8c; }
+        code .keyword { color: #569cd6; }
+        code .string { color: #ce9178; }
+        code .number { color: #b5cea8; }
+        code .function { color: #dcdcaa; }
+
+        /* --- Pie de Página --- */
+        footer {
+            text-align: center;
+            padding: 40px;
+            font-size: 1em;
+            color: #888;
+            background-color: #e9ecef;
+            margin-top: 50px;
+            border-top: 1px solid #ddd;
+        }
+        footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <svg style="display: none;">
+        <symbol id="icon-target" viewBox="0 0 24 24">
+            <path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10 10-4.49 10-10S17.51 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+        </symbol>
+        <symbol id="icon-chart" viewBox="0 0 24 24">
+            <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/>
+        </symbol>
+        <symbol id="icon-wrench" viewBox="0 0 24 24">
+            <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6.2 6.2 9 1.6 4.4C.5 6.8.9 9.8 2.9 11.8c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.4-2.4c.4-.4.4-1 0-1.4z"/>
+        </symbol>
+        <symbol id="icon-brain" viewBox="0 0 24 24">
+            <path d="M12 2C9.8 2 7.8 2.9 6.4 4.3 5 5.7 4.1 7.7 4 9.9c-.1 2.2.8 4.3 2.3 5.7C7.7 17 9.8 17.9 12 18c.5 0 .9-.1 1.4-.2 1.2-.3 2.3-.9 3.3-1.7 1.3-1.1 2.3-2.5 2.9-4.1.6-1.6.8-3.3.6-5-.3-1.9-1-3.6-2.1-5.1C16.9 3.1 15.3 2.3 13.6 2c-.6 0-1.1.1-1.6.1zm-1.1 14.3c-.6.2-1.2.3-1.8.3-1.5 0-2.9-.6-3.9-1.6-1-1-1.6-2.4-1.6-3.9 0-1.2.3-2.3 1-3.3C5.3 9 6.2 8.3 7.3 7.8c.6-.2 1.1-.3 1.7-.3.7 0 1.4.1 2 .4.7.2 1.3.6 1.8 1.1.5.5.9 1.1 1.1 1.8.2.7.4 1.4.4 2.1s-.1 1.4-.4 2.1c-.3.7-.6 1.3-1.1 1.8-.5.5-1.1.9-1.8 1.1zm2.8-2.3c.3-.3.5-.6.8-1 .3-.4.5-.8.6-1.3.1-.5.2-1 .2-1.5s-.1-1-.2-1.5c-.1-.5-.3-.9-.6-1.3-.3-.4-.6-.7-1-1-.4-.3-.7-.5-1.1-.7-.4-.2-.8-.3-1.3-.3s-1 .1-1.5.2c-.5.1-.9.3-1.3.6-.4.3-.7.6-1 1-.3.4-.5.8-.6 1.3-.1.5-.2 1-.2 1.5s.1 1 .2 1.5c.1.5.3.9.6 1.3.3.4.6.7 1 1 .4.3.7.5 1.1.7.4.2.8.3 1.3.3s1-.1 1.5-.2c.5-.1.9-.3 1.3-.6.4-.3.7-.6 1-1z"/>
+        </symbol>
+        <symbol id="icon-graph" viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+        </symbol>
+        <symbol id="icon-rocket" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-11h2v2h-2v-2zm0 4h2v6h-2v-6zM13.25 10.75l-4.5 4.5 1.41 1.41 4.5-4.5-1.41-1.41zM15 4l2.12 2.12-6.2 6.2-2.12-2.12L15 4zm-5.61 10.95c.3.3.7.45 1.11.45s.81-.15 1.11-.45l3.29-3.29c.63-.63.18-1.71-.71-1.71H9.5C8.6 10 8.16 11.08 8.78 11.71l2.61 2.61z" transform="rotate(315 12 12)"/>
+        </symbol>
+        <symbol id="icon-flag" viewBox="0 0 24 24">
+            <path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z"/>
+        </symbol>
+        <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+            <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zM12 2C7.86 2 4.5 5.36 4.5 9.5c0 3.82 2.66 7.05 6.24 7.43L11 17.5v1.5h2v-1.5l.26-.57C16.84 16.55 19.5 13.32 19.5 9.5 19.5 5.36 16.14 2 12 2z"/>
+        </symbol>
+    </svg>
+    
+
+    <header>
+        <h1>Proyecto: Reconocimiento de Dígitos</h1>
+        <p>Un viaje didáctico por la metodología <strong>CRISP-DM</strong></p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#fase1">Fase 1: Negocio</a></li>
+            <li><a href="#fase2">Fase 2: Datos</a></li>
+            <li><a href="#fase3">Fase 3: Preparación</a></li>
+            <li><a href="#fase4">Fase 4: Modelado</a></li>
+            <li><a href="#fase5">Fase 5: Evaluación</a></li>
+            <li><a href="#fase6">Fase 6: Despliegue</a></li>
+            <li><a href="#conclusiones">Conclusiones</a></li>
+        </ul>
+    </nav>
+
+    <main>
+
+        <section id="fase1" class="card">
+            <div class="card-header">
+                <h2>
+                    <svg class="icon icon-header"><use href="#icon-target"></use></svg>
+                    Fase 1: El Objetivo (Negocio)
+                </h2>
+            </div>
+            <div class="card-content">
+                <p>Todo proyecto empieza con una meta clara. ¿Qué queremos lograr?</p>
+                <ul>
+                    <li><strong>Objetivo Principal:</strong> Crear un modelo de IA capaz de "leer" un número escrito a mano (del 0 al 9) y adivinar cuál es.</li>
+                    <li><strong>Dataset:</strong> Usaremos el famoso dataset <strong>MNIST</strong>, que es como la "Biblia" para aprender sobre reconocimiento de imágenes.</li>
+                    <li><strong>Meta de Calidad (KPI):</strong> El modelo debe ser muy preciso. ¡Queremos que acierte más del <strong>95%</strong> de las veces!</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="fase2" class="card">
+            <div class="card-header">
+                <h2>
+                    <svg class="icon icon-header"><use href="#icon-chart"></use></svg>
+                    Fase 2: Conociendo los Datos
+                </h2>
+            </div>
+            <div class="card-content">
+                <p>Ahora, miremos "bajo el capó". ¿Con qué material vamos a trabajar?</p>
+                <ul>
+                    <li><strong>Imágenes:</strong> Tenemos 70,000 imágenes pequeñas (60,000 para entrenar y 10,000 para probar).</li>
+                    <li><strong>Formato:</strong> Cada imagen es de <strong>28x28 píxeles</strong>. Están en escala de grises.</li>
+                    <li><strong>Estructura de Datos:</strong> Cada imagen se "aplana" en una fila con 785 columnas:
+                        <ul style="list-style-type: '👉'; margin-top:10px;">
+                            <li><strong>Columna 1:</strong> La "etiqueta" (el número correcto, ej: "7").</li>
+                            <li><strong>Columnas 2-785:</strong> El valor de cada uno de los 784 píxeles (un número de 0 a 255).</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="fase3" class="card">
+            <div class="card-header">
+                <h2>
+                    <svg class="icon icon-header"><use href="#icon-wrench"></use></svg>
+                    Fase 3: Preparando los Datos
+                </h2>
+            </div>
+            <div class="card-content">
+                <p>Los datos "crudos" no se pueden usar directamente. ¡Necesitamos limpiarlos y transformarlos para el modelo!</p>
+                <ol style="padding-left: 20px;">
+                    <li><strong>Normalización:</strong> Convertimos los valores de los píxeles (0-255) a un rango más pequeño (0-1). Esto ayuda a que el modelo aprenda más rápido y mejor.</li>
+                    <li><strong>Redimensión (Reshape):</strong> Le devolvemos la forma de imagen. Convertimos la fila larga (784) de nuevo en una matriz de `(28, 28, 1)`.</li>
+                    <li><strong>One-Hot Encoding:</strong> Transformamos la etiqueta (ej. `5`) en un vector (ej. `[0,0,0,0,0,1,0,0,0,0]`). Esto le dice al modelo "es un 5", no "vale 5".</li>
+                </ol>
+                
+                <div class="didactic-box">
+                    <h3>
+                        <svg class="icon icon-lightbulb"><use href="#icon-lightbulb"></use></svg>
+                        ¿Qué es la Normalización?
+                    </h3>
+                    <p>Imagina que intentas comparar 100 centímetros con 1 metro. Es más fácil si ambos están en la misma unidad. Normalizar hace eso: pone todos los datos en una escala común (de 0 a 1) dividiéndolos por el valor máximo (255).</p>
+                </div>
+                
+<pre><code><span class="comment"># 1. Normalizar y 2. Redimensionar</span>
+<span class="variable">X_train</span> = <span class="variable">train_images</span>.<span class="function">reshape</span>(-<span class="number">1</span>, <span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>) / <span class="number">255.0</span>
+
+<span class="comment"># 3. One-Hot Encoding</span>
+<span class="variable">y_train</span> = <span class="variable">tf.keras.utils</span>.<span class="function">to_categorical</span>(<span class="variable">train_labels</span>, <span class="number">10</span>)</code></pre>
+            </div>
+        </section>
+
+        <section id="fase4" class="card">
+            <div class="card-header">
+                <h2>
+                    <svg class="icon icon-header"><use href="#icon-brain"></use></svg>
+                    Fase 4: Construyendo el "Cerebro"
+                </h2>
+            </div>
+            <div class="card-content">
+                <p>¡La parte divertida! Aquí creamos y entrenamos nuestra Red Neuronal.</p>
+                <ul>
+                    <li><strong>Técnica Elegida:</strong> Una <strong>Red Neuronal Convolucional (CNN)</strong>.</li>
+                    <li><strong>Arquitectura (Las "Capas" del Cerebro):</strong>
+                        <ol style="padding-left: 20px; margin-top: 10px;">
+                            <li>`Conv2D` + `MaxPooling`: Capas que actúan como "ojos", buscando bordes y curvas.</li>
+                            <li>`Flatten`: "Aplana" la imagen para que la red pueda procesarla.</li>
+                            <li>`Dense` + `Dropout`: El "núcleo" del pensamiento. `Dropout` evita que el modelo "memorice" todo.</li>
+                            <li>`Dense (Softmax)`: La capa final que toma la decisión y dice "¡Creo que es un 9!".</li>
+                        </ol>
+                    </li>
+                    <li><strong>Entrenamiento:</strong> "Alimentamos" al modelo con las 60,000 imágenes de entrenamiento y dejamos que aprenda durante <strong>10 "épocas"</strong> (vueltas).</li>
+                </ul>
+
+                <div class="didactic-box">
+                    <h3>
+                        <svg class="icon icon-lightbulb"><use href="#icon-lightbulb"></use></svg>
+                        ¿Por qué una CNN y no otra cosa?
+                    </h3>
+                    <p>Las CNN son especiales para imágenes. A diferencia de otras redes, "miran" la imagen en pequeñas secciones a la vez (como lo harían tus ojos), permitiéndoles entender conceptos como "un círculo arriba" o "una línea vertical", sin importar en qué parte de la imagen estén.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="fase5" class="card">
+            <div class="card-header">
+                <h2>
+                    <svg class="icon icon-header"><use href="#icon-graph"></use></svg>
+                    Fase 5: El Examen Final (Evaluación)
+                </h2>
+            </div>
+            <div class="card-content">
+                <p>¿Qué tan bien lo hizo nuestro modelo? Es hora de probarlo con las <strong>10,000 imágenes de prueba</strong> que NUNCA vio durante el entrenamiento.</p>
+                <ul>
+                    <li><strong>Precisión (Accuracy):</strong> ¿Qué porcentaje de aciertos tuvo? Si es 99%, significa que acertó 9,900 de las 10,000 imágenes. <strong>¡Objetivo (>95%) cumplido!</strong></li>
+                    <li><strong>Matriz de Confusión:</strong> Una tabla súper útil que nos dice <em>en qué se equivocó</em>. Por ejemplo: "Confundió 10 veces el número '7' con el '1'".</li>
+                    <li><strong>Gráficas de Pérdida/Precisión:</strong> Nos muestran cómo el modelo fue aprendiendo en cada época. Vemos si aprendió rápido y si se "estancó".</li>
+                </ul>
+<pre><code><span class="comment"># Evalúa el modelo con los datos de prueba</span>
+<span class="variable">test_loss</span>, <span class="variable">test_acc</span> = <span class="variable">model</span>.<span class="function">evaluate</span>(<span class="variable">X_test</span>, <span class="variable">y_test</span>)
+
+<span class="comment"># Imprime la nota final </span>
+<span class="function">print</span>(<span class="string">f"Precisión Final: {test_acc*100:.2f}%"</span>)</code></pre>
+            </div>
+        </section>
+
+        <section id="fase6" class="card">
+            <div class="card-header">
+                <h2>
+                    <svg class="icon icon-header"><use href="#icon-rocket"></use></svg>
+                    Fase 6: ¡Al Mundo Real! (Despliegue)
+                </h2>
+            </div>
+            <div class="card-content">
+                <p>El modelo no sirve de nada guardado en un disco. ¡Hay que ponerlo a trabajar!</p>
+                <ul>
+                    <li><strong>Crear una API:</strong> Es la forma más común. Se crea un "enlace" web donde cualquiera puede enviar una imagen y el modelo le devuelve la predicción.</li>
+                    <li><strong>Integrar en una App:</strong> El modelo se puede meter dentro de una aplicación móvil o una página web para que los usuarios la usen directamente.</li>
+                    <li><strong>Monitoreo:</strong> ¡El trabajo no termina! Hay que vigilar que el modelo siga funcionando bien con datos nuevos y re-entrenarlo si es necesario.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="conclusiones" class="card">
+            <div class="card-header">
+                <h2>
+                    <svg class="icon icon-header"><use href="#icon-flag"></use></svg>
+                    3. Conclusiones y Resultados
+                </h2>
+            </div>
+            <div class="card-content">
+                <p>Finalmente, ¿qué aprendimos? El proyecto fue un éxito y siguió de forma estructurada toda la metodología CRISP-DM.</p>
+                
+                <h3>Resumen de Resultados</h3>
+                <ul>
+                    <li><strong>Misión Cumplida:</strong> Se desarrolló un modelo que superó el criterio de éxito inicial de <strong>>95% de precisión</strong>.</li>
+                    <li><strong>Herramienta Correcta:</strong> La <strong>Red Neuronal Convolucional (CNN)</strong> demostró ser la arquitectura ideal para el reconocimiento de imágenes, aprendiendo características complejas de forma eficiente.</li>
+                </ul>
+
+                <h3>Limitaciones y Futuro</h3>
+                <ul>
+                    <li><strong>Datos "Limpios":</strong> El modelo es experto en el dataset MNIST, pero podría tener problemas con dígitos del "mundo real" (fotos borrosas, números tachados, etc.).</li>
+                    <li><strong>Mejora Continua:</strong> Para mantener su precisión, el modelo debería ser re-entrenado periódicamente con <strong>datos nuevos</strong> y monitorear su rendimiento.</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Infografía basada en el documento de la <strong>Universidad Continental Sede Cusco</strong>.</p>
+        <p>Docente: Ing. Hugo Espetia Huamanga.</p>
+    </footer>
+
+</body>
+</html>
